@@ -1,4 +1,5 @@
 <?php
+
 // $Id$
 
 
@@ -385,8 +386,29 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 				//$inspection['preName'] = null;
 				$inspection['estType'] = null;
 				$inspection['licNumber'] = $establishment->field_license_number->value();
+                                // old field curLicenced
 				$inspection['curLicenced'] = $establishment->field_currently_licensed->value();
+                                // new field curLicenced
+                                $inspection['curLicenced'] = $establishment->field_current_licence_number->value();
+                                // new field statusEstDate
+                                $inspection['statusEstDate'] = $establishment->field_status_of_establishment->value();
+                                // new field statusPrevDate
+                                $inspection['statusPrevDate'] = $establishment->field_status_date->value();
+                                                                
 			}
+                        // new field previousLicence
+                        if($establishment && $establishment->__isset('field_previous_licence')){
+                            $previous_licences = $establishment->field_previous_licence;
+                            $previous_licence = array();
+                            if ($previous_licences->value()){
+                                for($i=0; $previous_licences->count(); $i++){
+                                   $previous_licence[] = array('prevLicenceNum' => $previous_licences[$i]->field_previous_licence_number->value(),
+                                       'prevLicenceNumCancel' => $previous_licences[$i]->field_previous_licence_number_ca->value());                                                
+                                }
+                            }                                    
+                        }
+                        $inspection['previousLicence'] = $previous_licence;
+                                
 			if($establishment  && $establishment->__isset('field_sites')){
 				$inspection_site = $establishment->field_sites[0];
 				if ($inspection_site->value()){
