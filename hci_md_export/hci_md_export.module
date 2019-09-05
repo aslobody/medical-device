@@ -351,6 +351,12 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
                                     }
                                     $inspection['complainceHistory'] = $history_mdel;
                                 }
+                                // new field enforcementActions
+                                if($wrapper->__isset('field_enforcement_actions')){
+                                    if($wrapper->field_enforcement_actions->value()){
+                                        $inspection['enforcementActions'] = $wrapper->field_enforcement_actions->value();
+                                    }
+                                }
 				
 				$inspection_outcomes = $wrapper->__isset('field_inspection_outcome') ? $wrapper ->field_inspection_outcome : array();
 			
@@ -404,13 +410,19 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 				$inspection['estType'] = null;
 				$inspection['licNumber'] = $establishment->field_license_number->value();
                                 // old field curLicenced
-				$inspection['curLicenced'] = $establishment->field_currently_licensed->value();
+				//$inspection['curLicenced'] = $establishment->field_currently_licensed->value();
                                 // new field curLicenced
-                                $inspection['curLicenced'] = $establishment->field_current_licence_number->value();
+                                if($establishment->field_current_licence_number->value()){
+                                   $inspection['curLicenced'] = $establishment->field_current_licence_number->value(); 
+                                }                                
                                 // new field statusEstDate
-                                $inspection['statusEstDate'] = $establishment->field_status_of_establishment->value();
+                                if($establishment->field_status_of_establishment->value()){
+                                   $inspection['statusEstDate'] = $establishment->field_status_of_establishment->value(); 
+                                }                                
                                 // new field statusPrevDate
-                                $inspection['statusPrevDate'] = $establishment->field_status_date->value();
+                                if($establishment->field_status_date->value()){
+                                   $inspection['statusPrevDate'] = $establishment->field_status_date->value(); 
+                                }                               
                                                                 
 			}
                         // new field previousLicence
@@ -422,8 +434,8 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
                                    $previous_licence[] = array('prevLicenceNum' => $previous_licences[$i]->field_previous_licence_number->value(),
                                        'prevLicenceNumCancel' => $previous_licences[$i]->field_previous_licence_number_ca->value());                                                
                                 }
-                            }
-                            $inspection['previousLicence'] = $previous_licence;
+                               $inspection['previousLicence'] = $previous_licence;
+                            }                            
                         }
                         
                                 
