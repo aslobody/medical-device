@@ -290,6 +290,9 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 									}
 								}
 							}
+                                                        // new field riskRating
+                                                        //$observ_rating = array();
+                                                        //$observ_rating[$i]['riskRating'] = $observations_wrapper[$i]->field_risk_rating->value();
 						}
 						$observation_number = 0;
 						foreach($regulations as $regulation_by_regulation){
@@ -304,7 +307,8 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 													'regulation_en' => $regulation_en,
 													'regulation_fr' => $regulation_fr,
 													'summary_en' => $summary_en,
-													'summary_fr' => $summary_fr
+													'summary_fr' => $summary_fr,
+                                                                                                        'riskRating' => $observations_wrapper[$observation_number]->field_risk_rating->value()
 													);
 								
 							}
@@ -334,6 +338,19 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 					$inspection['observations']=$observations;
 
 				}
+                                // new field complainceHistory
+                                if($wrapper->__isset('field_complaince_history')){
+                                    $complaince_history = $wrapper->field_complaince_history;
+                                    $history_mdel = array();
+                                    if ($complaince_history->value()){
+                                        for ($i=0; $$complaince_history->count(); $i++){
+                                            $history_mdel[] = array('mdelNumber' => $complaince_history[$i]->field_mdel_number->value(),
+                                                'mdelStatus' => $complaince_history[$i]->field_mdel_status->value(),
+                                                'mdelStatusDate' => $complaince_history[$i]->field_mdel_date->value());
+                                        }
+                                    }
+                                    $inspection['complainceHistory'] = $history_mdel;
+                                }
 				
 				$inspection_outcomes = $wrapper->__isset('field_inspection_outcome') ? $wrapper ->field_inspection_outcome : array();
 			
@@ -363,7 +380,7 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 				if (!isset($inspection['measurestaken'])){
 					$inspection['measurestaken']=array();
 				}
-				
+                                				
 				$data[$inspection_number]['ReportSummaryInspection']=$inspection;
 
 			}
@@ -405,9 +422,10 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
                                    $previous_licence[] = array('prevLicenceNum' => $previous_licences[$i]->field_previous_licence_number->value(),
                                        'prevLicenceNumCancel' => $previous_licences[$i]->field_previous_licence_number_ca->value());                                                
                                 }
-                            }                                    
+                            }
+                            $inspection['previousLicence'] = $previous_licence;
                         }
-                        $inspection['previousLicence'] = $previous_licence;
+                        
                                 
 			if($establishment  && $establishment->__isset('field_sites')){
 				$inspection_site = $establishment->field_sites[0];
