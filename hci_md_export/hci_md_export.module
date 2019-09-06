@@ -11,7 +11,7 @@ function hci_md_export_cron(){
 	$count = db_query($sql) -> fetchField();
 	$max_records = variable_get('hci_md_export_log_max_records', $count);
 	$limit =  floor(($count-$max_records)/2);	// It seems that db_query execute twice.
-	
+
 	if ($limit >0 && $max_records>0){
 		db_query("delete from  {$table}  order by export_date  limit  $limit") -> execute();
 	}
@@ -28,16 +28,16 @@ function hci_md_export_permission() {
       'description' => t(''),
       ),
     );
-} 
+}
 /***
  * hook_menu
- */ 
+ */
 function hci_md_export_menu() {
 
   $items = array();
-  
+
   $root = 'admin/hc_inspection/hci_md_export';
-	
+
 	$items[$root] = array(
     'title' => t('MD Data Export'),
     'description' => t('Data export settings'),
@@ -47,12 +47,12 @@ function hci_md_export_menu() {
     'type' => MENU_NORMAL_ITEM,
     'file' => 'forms.inc',
    );
-   
+
    $items['export'] = array(
     'title' => t('Export'),
     'weight' => -6,
     //'access arguments' => array('export hci_md data'),
-	'access callback' => 'hci_md_export_login', 
+	'access callback' => 'hci_md_export_login',
     'page callback' => 'hci_md_export_export_data',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
@@ -102,9 +102,9 @@ function hci_md_export_menu() {
     'access arguments' => array('export hci_md data setting'),
 	'type' => MENU_LOCAL_TASK,
   );
-  
+
   $main_root = 'hci_md_export';
-	
+
 	$items[$main_root] = array(
     'title' => t('MD Data Export'),
     'description' => t('Data export settings'),
@@ -115,13 +115,13 @@ function hci_md_export_menu() {
     'file' => 'forms.inc',
 	'menu_name' => 'main-menu',
    );
-   
-  
+
+
   $items[$main_root . '/export_log'] = array(
     'title' => t('Export Log'),
     'weight' => -3,
     'access arguments' => array('export hci_md data setting'),
-	
+
     'page callback' => 'drupal_get_form',
     'page arguments' => array('hci_md_export_log_form'),
     'file' => 'forms.inc',
@@ -153,9 +153,9 @@ function hci_md_export_menu() {
 // implementation of hook_validatge
 
 function hci_md_export_node_validate($node, $form, &$form_state){
-	
+
 	//drupal_set_message(hci_md_dump($form_state, 'blue', TRUE));
-	
+
 	switch($node -> type){
 		case 'irc':
 			$wrapper = entity_metadata_wrapper('node', $node);
@@ -167,7 +167,7 @@ function hci_md_export_node_validate($node, $form, &$form_state){
 			$to_be_published_status_irc_sid = variable_get('hci_md_export_irc_publication_ready_state', '');
 			$published_status_iid_sid = variable_get('hci_md_export_iid_publication_published_state', '');
 			$published_status_irc_sid = variable_get('hci_md_export_irc_publication_published_state', '');
-			
+
 			$iid_sid = $wrapper -> field_gmp_iid -> field_workflow_iid -> value();
 			$iid_nid = $wrapper -> field_gmp_iid -> nid -> value();
 			$iid_ready_to_publish_state = workflow_get_sid_label($to_be_published_status_iid_sid);
@@ -179,7 +179,7 @@ function hci_md_export_node_validate($node, $form, &$form_state){
 			//drupal_set_message(hci_md_dump($iid_sid, 'blue', TRUE));
 		break;
 	}
-	
+
 }
 
 function hci_md_export_generate_export_data($inspection_node_nids=array()){
@@ -237,8 +237,8 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 							foreach($field_key_phrase_fr as $field_key_phrase_fr_item){
 								$regulations[$field_regulation][$field_category_en]['field_key_phrase_fr'][] = $field_key_phrase_fr_item;
 							}
-							
-							
+
+
 						}
 						foreach($regulations as $regulation_by_regulation){
 							foreach($regulation_by_regulation as $regulation_by_category){
@@ -250,12 +250,12 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 						}
 					}
 					$inspection['iids']=$iids;
-					
+
 				}
 				$data[$inspection_number]['InitialInspections']=$inspection;
 			}
 			//IRC
-			else if ($inspection_node->type == 'irc' ){ 
+			else if ($inspection_node->type == 'irc' ){
 				$inspection = array();
 				$inspection['drupal_nid'] = $inspection_node_nid;
 				$inspection['insNumber'] = $inspection_number;
@@ -266,13 +266,13 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 					$observations = array();
 					$regulations = array();
 					if ($observations_wrapper->value()){
-						
+
 						for($i = 0; $i < $observations_wrapper->count(); $i ++){
-							
+
 							$field_regulation_std_lns = $observations_wrapper[$i]->field_regulation_std_ln;
 							//$observation_number = $observations_wrapper[$i]->field_observation_number->value();
 							if ($field_regulation_std_lns->value()){
-								
+
 								foreach($field_regulation_std_lns as $field_regulation_std_ln){
 									$field_regulation = $field_regulation_std_ln->field_regulation -> value();
 									$field_category_en = $field_regulation_std_ln->field_category_english -> value();
@@ -296,7 +296,7 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 						}
 						$observation_number = 0;
 						foreach($regulations as $regulation_by_regulation){
-							
+
 							foreach($regulation_by_regulation as $regulation_by_category){
 								$regulation_en = $regulation_by_category['field_regulation'] . ' - ' . $regulation_by_category['field_category_en'];
 								$regulation_fr = $regulation_by_category['field_regulation'] . ' - ' . $regulation_by_category['field_category_fr'];
@@ -310,10 +310,10 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 													'summary_fr' => $summary_fr,
                                                                                                         'riskRating' => $observations_wrapper[$observation_number]->field_risk_rating->value()
 													);
-								
+
 							}
 						}
-						
+
 					}
 					foreach($observations as &$observation_index){
 						$observation_index['summary_en'] = array_unique($observation_index['summary_en']);
@@ -357,9 +357,9 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
                                         $inspection['enforcementActions'] = $wrapper->field_enforcement_actions->value();
                                     }
                                 }
-				
+
 				$inspection_outcomes = $wrapper->__isset('field_inspection_outcome') ? $wrapper ->field_inspection_outcome : array();
-			
+
 				foreach ($inspection_outcomes as $inspection_outcome){
 					$outcome_item = array();
 					$inspection_outcome_en = $inspection_outcome -> __isset('field_description_english') ? $inspection_outcome ->field_description_english ->value() : NULL;
@@ -372,7 +372,7 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 				if (!isset($inspection['inspection_outcome'])){
 					$inspection['inspection_outcome']=array();
 				}
-				
+
 				$inspection_measures_takens = $wrapper->__isset('field_measures_taken') ? $wrapper ->field_measures_taken : array();
 				foreach ($inspection_measures_takens as $inspection_measures_taken){
 					$measure_item = array();
@@ -386,7 +386,7 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 				if (!isset($inspection['measurestaken'])){
 					$inspection['measurestaken']=array();
 				}
-                                				
+
 				$data[$inspection_number]['ReportSummaryInspection']=$inspection;
 
 			}
@@ -394,7 +394,7 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 			if ($inspection_node->type == 'iid' ){
 				$iid_wrapper = $wrapper;
 			}
-			else if ($inspection_node->type == 'irc' ){ 
+			else if ($inspection_node->type == 'irc' ){
 				$iid_wrapper = $wrapper->field_gmp_iid;
 			}
 			$inspection = array();
@@ -403,9 +403,9 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 			$establishment = null;
 			if($iid_wrapper->__isset('field_establishment')){
 				$establishment=$iid_wrapper->field_establishment;
-				
+
 				$inspection['estName'] = $establishment->field_establishment_name->value();
-				
+
 				//$inspection['preName'] = null;
 				$inspection['estType'] = null;
 				$inspection['licNumber'] = $establishment->field_license_number->value();
@@ -413,17 +413,17 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 				//$inspection['curLicenced'] = $establishment->field_currently_licensed->value();
                                 // new field curLicenced
                                 if($establishment->field_current_licence_number->value()){
-                                   $inspection['curLicenced'] = $establishment->field_current_licence_number->value(); 
-                                }                                
+                                   $inspection['curLicenced'] = $establishment->field_current_licence_number->value();
+                                }
                                 // new field statusEstDate
                                 if($establishment->field_status_of_establishment->value()){
-                                   $inspection['statusEstDate'] = $establishment->field_status_of_establishment->value(); 
-                                }                                
+                                   $inspection['statusEstDate'] = $establishment->field_status_of_establishment->value();
+                                }
                                 // new field statusPrevDate
                                 if($establishment->field_status_date->value()){
-                                   $inspection['statusPrevDate'] = $establishment->field_status_date->value(); 
-                                }                               
-                                                                
+                                   $inspection['statusPrevDate'] = $establishment->field_status_date->value();
+                                }
+
 			}
                         // new field previousLicence
                         if($establishment && $establishment->__isset('field_previous_licence')){
@@ -432,15 +432,16 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
                             if ($previous_licences->value()){
                                 for($i=0; $previous_licences->count(); $i++){
                                    $previous_licence[] = array('prevLicenceNum' => $previous_licences[$i]->field_previous_licence_number->value(),
-                                       'prevLicenceNumCancel' => $previous_licences[$i]->field_previous_licence_number_ca->value());                                                
+                                       'prevLicenceNumCancel' => $previous_licences[$i]->field_previous_licence_number_ca->value());
                                 }
                                $inspection['previousLicence'] = $previous_licence;
-                            }                            
+                            }
                         }
-                        
-                                
+
+
 			if($establishment  && $establishment->__isset('field_sites')){
-				$inspection_site = $establishment->field_sites[0];
+				//$inspection_site = $establishment->field_sites[0];
+				$inspection_site = $establishment->field_sites;
 				if ($inspection_site->value()){
 					//$inspection['site'] = null;
 					//$inspection['locationID'] = $inspection_site->field_site_number->value();
@@ -497,7 +498,7 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 						$inspection['terms_conditions_data'] = $terms_conditions;
 					}
 				}
-				
+
 			}
 			$inspection['insTypeEn'] = NULL;
 			$inspection['insTypeFr'] = NULL;
@@ -529,7 +530,7 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 					}
 				}
 			}
-			
+
 			elseif ($inspection_node->type == 'iid'){
 				$published_irc_nid = hci_md_published_irc($inspection_node_nid);
 				if (!$published_irc_nid){
@@ -550,9 +551,9 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 					$inspection['ratingFr'] = 'Inspection en cours';
 					$inspection['rating'] =  'I';
 				}
-				
+
 			}
-			
+
 			$data[$inspection_number]['Inspections']=$inspection;
 			// logging
 			$log = t('The inspection has been fetched by DHPID');
@@ -586,7 +587,7 @@ function hci_md_export_log($inspection_node_nid, $inspection_type, $log, $error=
 	else{
 		db_insert($table) -> fields($record) -> execute();
 	}
-	
+
 }
 
 function hci_md_export_get_inspections_to_publish($delta_only = FALSE){
@@ -622,9 +623,9 @@ function hci_md_export_get_inspections_to_publish($delta_only = FALSE){
 		$published_status_iid_sid = variable_get('hci_md_export_irc_publication_published_state', '');
 		$nids = array_merge($nids, _hci_md_export_get_inspections($type, $published_status_iid_sid, $last_publication_time));
 	}
-	
+
 	//Other content types
-	
+
 	//$types_to_check = array('hci_establishment', 'hci_site', );
 	$query = new EntityFieldQuery();
 	$query->entityCondition('entity_type', 'node')
@@ -661,7 +662,7 @@ function hci_md_export_get_inspections_to_publish($delta_only = FALSE){
 		  ->propertyCondition('status', NODE_PUBLISHED)
 		  ->propertyCondition('changed', $last_publication_time, '>');
 	$result = $query->execute();
-	
+
 	if (isset($result['node'])) {
 		foreach($result['node'] as $establishment){
 			$establishment_nids[] = $establishment->nid;
@@ -673,7 +674,7 @@ function hci_md_export_get_inspections_to_publish($delta_only = FALSE){
 		$type = 'iid';
 		$published_status_iid_sid = variable_get('hci_md_export_iid_publication_published_state', '');
 		$updated_iids = _hci_md_export_get_inspections($type, $published_status_iid_sid, 0, array(), $establishment_nids);
-		
+
 		if (!empty($updated_iids)){
 			$nids = array_merge($nids, $updated_iids);
 			$type = 'irc';
@@ -691,14 +692,14 @@ function hci_md_export_set_inspection_workflow_state_to_published($inspection_ni
 	$published_status_iid_sid = variable_get('hci_md_export_iid_publication_published_state', '');
 	$published_status_irc_sid = variable_get('hci_md_export_irc_publication_published_state', '');
 	$nodes = node_load_multiple($inspection_nids);
-	
+
 	foreach($nodes as $node){
 		//drupal_set_message(hci_md_dump($node, 'red', TRUE));
 		//$wrapper=entity_metadata_wrapper('node', $node);
 		$old_sid = null;
 		$new_sid = null;
 		$field = null;
-		
+
 		if ($node->type == 'iid'){
 			$field = 'field_workflow_iid';
 			$old_sid = workflow_node_current_state($node, 'node', $field);
@@ -742,13 +743,13 @@ function _hci_md_export_get_inspections($type, $workflow_sid, $last_publication_
 		$query->fieldCondition('field_establishment', 'target_id', $establishment_nids, 'IN');
 	}
 	$result = $query->execute();
-	
+
 	if (isset($result['node'])) {
 		foreach($result['node'] as $inspection_nid){
 			$inspection_nids[] = $inspection_nid->nid;
 		}
 	}
-	
+
 	return $inspection_nids;
 }
 /***
@@ -763,16 +764,16 @@ function _hci_md_export_get_inspections($type, $workflow_sid, $last_publication_
 */
 
 function hci_md_export_export_data(){
-	
+
 	/*******************************
-	/** If this function is called from other applications, the $user is the anonymous user. Due to the access settings of some modules, 
+	/** If this function is called from other applications, the $user is the anonymous user. Due to the access settings of some modules,
 	/** such as workflow access, the anonymous user has to be set to permit to access to IID and IRC at any workflow states, which does not sounds
 	/** quite good. The solution here is as follows:
 	/** Save $user to $ori_user
 	/** Change $user to the user who calls this function. The user has to be set to permit to access to IID and IRC at any workflow state
 	/** Change $user back to $ori_user
 	********************************/
-	
+
 	global $user;
 	$ori_user = clone($user);
 	$dhpid_response = array();
@@ -809,7 +810,7 @@ function hci_md_export_export_data(){
 		$user = user_load($uid);
 		if (!empty($dhpid_response)){
 			// Processes the response from DHPID
-			
+
 			// updates workflow state and logs response
 			$migration_is_perfect = TRUE;
 			foreach ($dhpid_response as $nid => $result){
@@ -831,10 +832,10 @@ function hci_md_export_export_data(){
 				if ($node) $type = $node -> type;
 				hci_md_export_log($nid, $type, $log, $error);
 			}
-						
+
 			$content='Response from DHPID is processed.';
 			$mime = 'text/plain';
-			
+
 		}
 		else{
 			$inspection_nids = hci_md_export_get_inspections_to_publish();
@@ -857,7 +858,7 @@ function hci_md_export_export_data(){
 					$output = drupal_json_encode($data);
 				}
 				$content=$output;
-				
+
 			}
 			else{
 				$content='No inspection data available';
@@ -870,7 +871,7 @@ function hci_md_export_export_data(){
     print $content;
 	$user = $ori_user;
 	// sets last export_time
-			
+
 	variable_set('hci_md_export_last_publication_time', time());
 
 }
@@ -892,7 +893,7 @@ function hci_md_published_irc($iid_node_nid){
 		return FALSE;
 	}
 	return array_shift($result['node'])->nid;
-	
+
 }
 /***
 * return IRC nid or null
@@ -909,6 +910,5 @@ function hci_md_ready_to_publish_irc($iid_node_nid){
 		return FALSE;
 	}
 	return array_shift($result['node'])->nid;
-	
-}
 
+}
