@@ -271,6 +271,11 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 
 							$field_regulation_std_lns = $observations_wrapper[$i]->field_regulation_std_ln;
 							//$observation_number = $observations_wrapper[$i]->field_observation_number->value();
+                                                        // new field field_risk_rating 
+                                                        if($observations_wrapper[$i]->field_risk_rating->value()){
+                                                           $observ_rating = $observations_wrapper[$i]->field_risk_rating->value();
+                                                        } else $observ_rating = null;                                                       
+                                                        
 							if ($field_regulation_std_lns->value()){
 
 								foreach($field_regulation_std_lns as $field_regulation_std_ln){
@@ -279,6 +284,11 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 									$field_category_fr = $field_regulation_std_ln->field_category_french -> value();
 									$field_key_phrase_en = $field_regulation_std_ln->field_key_phrase_english -> value();
 									$field_key_phrase_fr = $field_regulation_std_ln->field_key_phrase_french -> value();
+                                                                        // added new fields field_irco_field, field_risk_rating
+                                                                        $field_irco_field = $field_regulation_std_ln->field_irco_field->value();
+                                                                        $regulations[$field_regulation][$field_category_en]['field_irco_field'] = $field_irco_field;
+                                                                        $regulations[$field_regulation][$field_category_en]['field_risk_rating'] = $observ_rating;
+                                                                        
 									$regulations[$field_regulation][$field_category_en]['field_regulation'] = $field_regulation;
 									$regulations[$field_regulation][$field_category_en]['field_category_en'] = $field_category_en;
 									$regulations[$field_regulation][$field_category_en]['field_category_fr'] = $field_category_fr;
@@ -289,12 +299,9 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 										$regulations[$field_regulation][$field_category_en]['field_key_phrase_fr'][] = $field_key_phrase_fr_item;
 									}
 								}
-							}
-                                                        // new field riskRating
-                                                        $observ_rating = array();
-                                                        $observ_rating[] = $observations_wrapper[$i]->field_risk_rating->value();
+							}                                                        
 						}
-                                                $inspection['riskRating'] = $observ_rating;
+                                                
 						$observation_number = 0;
 						foreach($regulations as $regulation_by_regulation){
 
@@ -303,12 +310,18 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 								$regulation_fr = $regulation_by_category['field_regulation'] . ' - ' . $regulation_by_category['field_category_fr'];
 								$summary_en = $regulation_by_category['field_key_phrase_en'];
 								$summary_fr = $regulation_by_category['field_key_phrase_fr'];
+                                                                // new fields field_irco_field, field_risk_rating
+                                                                $irco_field = $regulation_by_category['field_irco_field'];
+                                                                $risk_rating = $regulation_by_category['field_risk_rating'];
+                                                                
 								$observation_number ++;
 								$observations[]=array('observation_no' => $observation_number,
 													'regulation_en' => $regulation_en,
 													'regulation_fr' => $regulation_fr,
 													'summary_en' => $summary_en,
-													'summary_fr' => $summary_fr                                                                                                    
+													'summary_fr' => $summary_fr,
+                                                                                                        'riskRating' => $risk_rating,
+                                                                                                        'irco' => $irco_field
 													);
 
 							}
