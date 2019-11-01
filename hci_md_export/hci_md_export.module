@@ -433,22 +433,23 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
                                    $inspection['statusEstDate'] = $establishment->field_status_of_establishment->value();
                                 }
                                 // new field statusPrevDate
-                                if($establishment->field_status_date->value()){
-                                   $inspection['statusPrevDate'] = $establishment->field_status_date->value();
-                                }
+                                //if($establishment->field_status_date->value()){
+                                   //$inspection['statusPrevDate'] = $establishment->field_status_date->value();
+                                //}
                                 // new field previousLicence
                                 if($establishment->field_previous_licence->value()){
                                     foreach($establishment->field_previous_licence as $previous_licence){
                                         $inspection['previousLicence'][] = array('prevLicenceNum' => $previous_licence->field_previous_licence_number->value(),
-                                       'prevLicenceNumCancel' => $previous_licence->field_previous_licence_number_ca->value());
+                                       'prevLicenceNumCancel' => $previous_licence->field_previous_licence_number_ca->value(),
+                                       'statusPrevDate' => $previous_licence->field_status_date->value());
                                     }
                                 }
 
 			}
 
 			if($establishment  && $establishment->__isset('field_sites')){
-				//$inspection_site = $establishment->field_sites[0];
-				$inspection_site = $establishment->field_sites;
+				$inspection_site = $establishment->field_sites[0];
+				//$inspection_site = $establishment->field_sites;
 				if ($inspection_site->value()){
 					//$inspection['site'] = null;
 					//$inspection['locationID'] = $inspection_site->field_site_number->value();
