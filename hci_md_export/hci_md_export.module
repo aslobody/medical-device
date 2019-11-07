@@ -448,8 +448,8 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 			}
 
 			if($establishment  && $establishment->__isset('field_sites')){
-				//$inspection_site = $establishment->field_sites[0];
-				$inspection_site = $establishment->field_sites;
+				$inspection_site = $establishment->field_sites[0];
+				//$inspection_site = $establishment->field_sites;
 				if ($inspection_site->value()){
 					//$inspection['site'] = null;
 					//$inspection['locationID'] = $inspection_site->field_site_number->value();
