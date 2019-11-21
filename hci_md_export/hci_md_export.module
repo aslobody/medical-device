@@ -368,7 +368,7 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
                                 if($wrapper->__isset('field_enforcement_actions')){
                                     if($wrapper->field_enforcement_actions->value()){
                                         $inspection['enforcementActions'] = $wrapper->field_enforcement_actions->value();
-                                    }
+                                    } else $inspection['enforcementActions'] = null;
                                 }
 
 				$inspection_outcomes = $wrapper->__isset('field_inspection_outcome') ? $wrapper ->field_inspection_outcome : array();
@@ -427,11 +427,11 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
                                 // new field curLicenced
                                 if($establishment->field_current_licence_number->value()){
                                    $inspection['curLicenced'] = $establishment->field_current_licence_number->value();
-                                }
+                                } else $inspection['curLicenced'] = null;
                                 // new field statusEstDate
                                 if($establishment->field_status_of_establishment->value()){
                                    $inspection['statusEstDate'] = $establishment->field_status_of_establishment->value();
-                                }
+                                } else $inspection['statusEstDate'] = null;
                                 // new field statusPrevDate
                                 //if($establishment->field_status_date->value()){
                                    //$inspection['statusPrevDate'] = $establishment->field_status_date->value();
@@ -443,7 +443,7 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
                                        'prevLicenceNumCancel' => $previous_licence->field_previous_licence_number_ca->value(),
                                        'statusPrevDate' => $previous_licence->field_status_date->value());
                                     }
-                                }
+                                } else $inspection['previousLicence'] = null;
 
 			}
 
