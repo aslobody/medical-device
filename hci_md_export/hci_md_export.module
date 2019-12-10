@@ -423,9 +423,11 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 				$inspection['estType'] = null;
 				$inspection['licNumber'] = $establishment->field_license_number->value();
                                 // old field curLicenced
-				//$inspection['curLicenced'] = $establishment->field_currently_licensed->value();
+                                if($establishment->field_currently_licensed->value()){
+                                    $inspection['curLicenced'] = $establishment->field_currently_licensed->value();
+                                }
                                 // new field curLicenced
-                                if($establishment->field_current_licence_number->value()){
+                                elseif($establishment->field_current_licence_number->value()){
                                    $inspection['curLicenced'] = $establishment->field_current_licence_number->value();
                                 } else $inspection['curLicenced'] = null;
                                 // new field statusEstDate
