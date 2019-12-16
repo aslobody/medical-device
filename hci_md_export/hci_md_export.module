@@ -424,7 +424,7 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 				$inspection['licNumber'] = $establishment->field_license_number->value();
                                 // old field curLicenced
                                 if($establishment->field_currently_licensed->value()){
-                                    if($establishment->field_currently_licensed->value()==FALSE){
+                                    if($establishment->field_currently_licensed->value()=="0"||$establishment->field_currently_licensed->value()=="No"){
                                         $inspection['curLicenced'] = "6";
                                     } else {
                                         $inspection['curLicenced'] = "1";
