@@ -424,12 +424,12 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 				$inspection['licNumber'] = $establishment->field_license_number->value();
                                 // old field curLicenced
                                 if($establishment->field_currently_licensed->value()){
-                                    /*if($establishment->field_currently_licensed->value()===TRUE){
+                                    if($establishment->field_currently_licensed->value(array('sanitize' => TRUE))==TRUE){
                                         $inspection['curLicenced'] = "1";
                                     } else {
                                         $inspection['curLicenced'] = "6";
-                                    } */
-                                    $inspection['curLicenced'] = $establishment->field_currently_licensed->value(array('sanitize' => TRUE));
+                                    }
+                                    //$inspection['curLicenced'] = $establishment->field_currently_licensed->value(array('sanitize' => TRUE));
                                 }
                                 // new field curLicenced
                                 elseif($establishment->field_current_licence_number->value()){
