@@ -422,19 +422,16 @@ function hci_md_export_generate_export_data($inspection_node_nids=array()){
 				//$inspection['preName'] = null;
 				$inspection['estType'] = null;
 				$inspection['licNumber'] = $establishment->field_license_number->value();
-                                // old field curLicenced
-                                //if($establishment->field_currently_licensed->value()){
-                                    if($establishment->field_currently_licensed->value(array('sanitize' => TRUE))==TRUE){
-                                        $inspection['curLicenced'] = "1";
-                                    } //else {
-                                        //$inspection['curLicenced'] = "6";
-                                    //}
-                                    //$inspection['curLicenced'] = $establishment->field_currently_licensed->value(array('sanitize' => TRUE));
-                                //}
+                                
                                 // new field curLicenced
-                                elseif($establishment->field_current_licence_number->value()){
+                                if($establishment->field_current_licence_number->value()){
                                    $inspection['curLicenced'] = $establishment->field_current_licence_number->value();
+                                }
+                                // old field curLicenced
+                                elseif($establishment->field_currently_licensed->value(array('sanitize' => TRUE))==TRUE){
+                                    $inspection['curLicenced'] = "1";
                                 } else $inspection['curLicenced'] = "6";
+                                
                                 // new field statusEstDate
                                 if($establishment->field_status_of_establishment->value()){
                                    $inspection['statusEstDate'] = format_date($establishment->field_status_of_establishment->value(), 'custom', 'Y-m-d');
